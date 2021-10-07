@@ -119,6 +119,12 @@ app.get("/me", async (req, res) => {
   res.json(userRes);
 });
 
+app.delete("/me", (req, res) => {
+  console.log(`Logging out ${req.session.username}`);
+  req.session.destroy();
+  res.status(200).end();
+});
+
 // WORKOUT MODIFICATIONS
 
 app.post("/workout", async (req, res) => {
