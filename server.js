@@ -151,6 +151,35 @@ app.post("/workout", async (req, res) => {
   res.status(200).end();
 });
 
+app.patch("/movement", async (req, res) => {
+  console.log("Received PATCH to /movement")
+  if (!req.session.username) {
+    console.log("Not even logged in wtf");
+    res.status(401).end();
+  }
+  console.log(`Modifying movement for user ${req.session.username}`);
+  console.log(`Modifying movement for workout ${req.query.workout_id}`);
+
+  const updateRes = await mongoClient
+    .db("final")
+    .collection("users")
+    .updateOne(
+      {
+        username: req.session.username,
+        "workouts._id": req.query.workout_id,
+        "workouts.movements.name": req.body.name
+      },
+
+      { $set:
+        {
+         "workouts.$.movements.$": req.body 
+        } 
+      } 
+    );
+
+  res.status(200).end();
+})
+
 app.post("/movement", async (req, res) => {
   console.log("Received POST to /movement");
   if (!req.session.username) {
