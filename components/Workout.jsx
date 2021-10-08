@@ -1,5 +1,5 @@
 import { Redirect } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
 import useUser from "../hooks/useUser";
 import queryString from "query-string";
 import Movement_Card_View from "./Movement_Card_View";
@@ -105,8 +105,13 @@ const Set = (props) => (
   </div>
 );
 
+const ModifySetComponent = (props) => {
+  return <div>{JSON.stringify(props.movement)}</div>;
+};
+
 const Workout = (props) => {
   const { user, loading, loggedOut } = useUser();
+  const [editingMode, setEditingMode] = useState(null);
   const parsed = queryString.parse(props.location.search);
 
   //console.log(parsed);
@@ -132,10 +137,31 @@ const Workout = (props) => {
           <div>You have no movements yet :(</div>
         ) : (
           workoutRes.movements.map((movement) => (
-            <Movement_Card_View movement={movement} />
+            <>
+              <Movement_Card_View movement={movement} />
+              <button
+                onClick={() => {
+                  console.log(`Editing movement ${movement.movementName}`);
+                  setEditingMode(movement);
+                  console.log("Editing mode: " + editingMode);
+                }}
+              >
+                Edit
+              </button>
+            </>
           ))
         )}
-        <AddNewSetComponent workout_id={parsed._id} />
+        {editingMode ? (
+          <>
+            <ModifySetComponent
+              workout_id={parsed._id}
+              movement={editingMode}
+            />
+            <button onClick={setEditingMode(null)}>Cancel Edit</button>
+          </>
+        ) : (
+          <AddNewSetComponent workout_id={parsed._id} />
+        )}
       </div>
     );
   }
