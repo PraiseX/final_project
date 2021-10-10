@@ -45,12 +45,19 @@ class AddNewSetComponent extends React.Component {
   addModifyButtonAction = async () => {
     console.log("Adding new movement");
 
-    //const formElement = document.getElementById("addNewMovementForm");
+    // const formElement = document.getElementById("addNewMovementForm");
+    let bad_form = false;
 
     const movementName = document.getElementById("movementName").value;
     let numSets = this.props.parent.state.newNumSets;
     const sets = [];
     for (let i = 0; i < numSets; i++) {
+      if(document.getElementById(`weight${i}`).value == '' ||
+        document.getElementById(`reps${i}`).value == '' ||
+        document.getElementById(`RPE${i}`).value == '') {
+        bad_form = true
+      }
+
       const set = {
         weight: document.getElementById(`weight${i}`).value,
         reps: document.getElementById(`reps${i}`).value,
@@ -59,26 +66,38 @@ class AddNewSetComponent extends React.Component {
       sets.push(set);
     }
 
-    if (
-      document.getElementById("addModifyButton").innerHTML ===
-      "Add New Movement"
-    ) {
-      const res = await fetch(`/movement?workout_id=${this.props.workout_id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ movementName, numSets, sets }),
-      });
-    } else if (
-      document.getElementById("addModifyButton").innerHTML === "Edit"
-    ) {
-      const res = await fetch(`/movement?workout_id=${this.props.workout_id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ movementName, numSets, sets }),
-      });
+    console.log(sets)
+
+    if(movementName == '') {
+      bad_form = true
     }
-    mutate();
-    location.reload();
+
+    if(!bad_form) {
+
+      if (
+          document.getElementById("addModifyButton").innerHTML ===
+          "Add New Movement"
+      ) {
+        const res = await fetch(`/movement?workout_id=${this.props.workout_id}`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({movementName, numSets, sets}),
+        });
+      } else if (
+          document.getElementById("addModifyButton").innerHTML === "Edit"
+      ) {
+        const res = await fetch(`/movement?workout_id=${this.props.workout_id}`, {
+          method: "PATCH",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({movementName, numSets, sets}),
+        });
+      }
+      mutate();
+      location.reload();
+    }
+    else {
+      alert("Form is missing fields")
+    }
   };
 
   render() {
