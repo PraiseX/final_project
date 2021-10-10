@@ -169,9 +169,9 @@ class WrapperClass extends React.Component {
     } else {
       return (
         <div id="workoutPage">
-          <h1>{workoutRes.name}</h1>
+          <h1 class='title'>{workoutRes.name}</h1>
           {workoutRes.movements.length === 0 ? (
-            <div>You have no movements yet :(</div>
+            <div class='title'>You have no movements yet :(</div>
           ) : (
             <div id="cards">
               {" "}

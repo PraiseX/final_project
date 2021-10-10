@@ -8,3 +8,15 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 }
+
+#addNewMovementForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title {
+    background: #cdcdcda6;
+    text-align: center;
+}
